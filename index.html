@@ -22,6 +22,7 @@ h1{font-family:"DM Serif Display",serif;color:var(--navy);font-weight:400;font-s
 .who input:focus{outline:none;border-color:var(--orange)}
 button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:10px 14px;font-weight:800}
 .btn{background:var(--navy);color:#fff}
+a.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;padding:10px 14px;font-weight:800;text-decoration:none}
 .btn.orange{background:var(--orange)}
 .btn.ghost{background:transparent;color:var(--navy);border:2px solid var(--navy)}
 .holder{font-family:"Permanent Marker",cursive;color:var(--navy);font-size:20px}
@@ -74,7 +75,7 @@ h2{font-family:"DM Serif Display",serif;color:var(--navy);font-weight:400;font-s
 /* overlay */
 .ov{position:fixed;inset:0;background:rgba(18,58,99,.72);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
 .ov.show{display:flex}
-.modal{background:#fffdf8;border-radius:22px;max-width:380px;width:100%;padding:20px;text-align:center;position:relative}
+.modal{background:#fffdf8;border-radius:22px;max-width:420px;width:100%;padding:20px;text-align:center;position:relative;max-height:88vh;overflow:auto}
 .modal .mascot{width:170px;height:190px;margin:0 auto 4px}
 .big-stamp{width:150px;height:150px;margin:6px auto 10px;border-radius:50%;border:5px double var(--c,#c2410c);color:var(--c,#c2410c);display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:"Permanent Marker",cursive;transform:rotate(-10deg);animation:thump .7s cubic-bezier(.2,1.6,.4,1) both;--r:-10deg}
 .big-stamp .l{font-size:46px;line-height:1}
@@ -2486,10 +2487,10 @@ var qrcode = function() {
   <div class="card how">
     <h2>Cómo funciona</h2>
     <ol>
-      <li>Compra en el puesto de cualquier paralelo.</li>
+      <li>Escribe tu nombre (obligatorio) y compra en el puesto de cualquier paralelo.</li>
       <li>Pide el código QR del puesto y toca <b>Escanear sello</b> (o escanéalo con la cámara de tu celular).</li>
       <li>El sello aparece aquí. Completa países y pasaportes para ganar premios.</li>
-      <li>Lleva tu celular a la <b>Aduana</b> para canjear.</li>
+      <li>Los premios se registran solos al completar cada meta: muéstralos en la <b>Aduana</b> para recibirlos.</li>
     </ol>
   </div>
 
@@ -2498,14 +2499,14 @@ var qrcode = function() {
 
 <div id="panel"><div class="pw">
   <div class="phead"><img src="data:image/png;base64,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" alt="K-Launch"><h1>Sabores del Mundo · Panel en vivo</h1><span class="live" id="pLive">Conectando…</span></div>
-  <div class="kpis"><div class="kpi"><span>Pasaportes</span><b id="kPas">0</b></div><div class="kpi"><span>Compras registradas</span><b id="kSel">0</b></div><div class="kpi"><span>Sellos</span><b id="kSel2">0</b></div><div class="kpi"><span>Premios entregados</span><b id="kCan">0</b></div><div class="kpi"><span>Embajadores (14/14)</span><b id="kEmb">0</b></div></div>
+  <div class="kpis"><div class="kpi"><span>Pasaportes</span><b id="kPas">0</b></div><div class="kpi"><span>Compras registradas</span><b id="kSel">0</b></div><div class="kpi"><span>Sellos</span><b id="kSel2">0</b></div><div class="kpi"><span>Premios ganados</span><b id="kCan">0</b></div><div class="kpi"><span>Embajadores (14/14)</span><b id="kEmb">0</b></div></div>
   <div class="pgrid">
     <div class="pcard"><h2>Ranking por paralelo (compras)</h2><div id="rPar"></div></div>
     <div style="display:grid;gap:12px;align-content:start">
       <div class="pcard"><h2>Ranking por curso (compras)</h2><div id="rCur"></div></div>
       <div class="pcard"><h2>Últimas compras</h2><div class="feed" id="fSel"></div></div>
     </div>
-    <div class="pcard"><h2>Premios entregados</h2><div class="feed" id="fCan"></div></div>
+    <div class="pcard"><h2>Premios ganados</h2><div class="feed" id="fCan"></div></div>
     <div class="pcard"><h2>Participantes del sorteo</h2><div class="feed" id="fSor"></div>
       <div class="pbtns"><button class="btn" data-csv="compras">Descargar compras (CSV)</button><button class="btn" data-csv="sellos">Descargar sellos (CSV)</button><button class="btn" data-csv="canjes">Descargar premios (CSV)</button><button class="btn" data-csv="pasaportes">Descargar pasaportes (CSV)</button><button class="btn ghost" data-csv="reinicios">Reinicios (CSV)</button></div>
     </div>
@@ -2601,16 +2602,20 @@ async function flush(){}
 // Verificación central de un premio antes de entregarlo
 async function api(b){
   const ref = FB.collection("canjes").doc(b.pasaporte+"_"+b.premioId);
+  let obs = b.force ? "Nombre repetido, verificado por Aduana" : "";
   if (!b.force && b.nombre){
-    const q = await withTimeout(FB.collection("canjes").where("premioId","==",b.premioId).where("nombreNorm","==",norm(b.nombre)).limit(1).get({source:"server"}), 7000);
-    const o = q.docs.map(d=>d.data()).find(x=>x.pasaporte!==b.pasaporte);
-    if (o) return {ok:false, dupName:true, nombre:o.nombre, pasaporte:o.pasaporte, cuando:fmtC(o.ts)};
+    try {
+      const q = await withTimeout(FB.collection("canjes").where("premioId","==",b.premioId).where("nombreNorm","==",norm(b.nombre)).limit(1).get({source:"server"}), 7000);
+      const o = q.docs.map(d=>d.data()).find(x=>x.pasaporte!==b.pasaporte);
+      if (o && !b.auto) return {ok:false, dupName:true, nombre:o.nombre, pasaporte:o.pasaporte, cuando:fmtC(o.ts)};
+      if (o) obs = "Mismo nombre ya premiado en " + o.pasaporte;
+    } catch(e){ if (!b.auto) throw e; }
   }
   try {
     await withTimeout(FB.runTransaction(async tx=>{
       const d = await tx.get(ref);
       if (d.exists){ const x = d.data(); const err = new Error("dup"); err.dup = x; throw err; }
-      tx.set(ref, {pasaporte:b.pasaporte, nombre:b.nombre, nombreNorm:norm(b.nombre), premio:b.premio, premioId:b.premioId, sellos:b.sellos, obs:b.force?"Nombre repetido, verificado por Aduana":"", ts:b.ts, srv:SRV()});
+      tx.set(ref, {pasaporte:b.pasaporte, nombre:b.nombre, nombreNorm:norm(b.nombre), premio:b.premio, premioId:b.premioId, sellos:b.sellos, obs:obs, ts:b.ts, srv:SRV()});
     }), 9000);
     return {ok:true};
   } catch(e){
@@ -2647,15 +2652,16 @@ function render(){
   // who
   const who = document.getElementById("whoCard");
   if (!S.name){
-    who.innerHTML = `<div style="font-weight:800;color:var(--navy);margin-bottom:8px">¿A nombre de quién va este pasaporte?</div>
+    who.innerHTML = `<div style="font-weight:800;color:var(--navy);margin-bottom:8px">¿A nombre de quién va este pasaporte? <span style="color:#b42318">*</span></div><div style="font-size:13px;color:var(--muted);margin:-4px 0 8px">Obligatorio para poder escanear y registrar tus premios.</div>
     <div class="who"><input id="nm" maxlength="40" placeholder="Nombre (familia o estudiante)" autocomplete="name"><button class="btn orange" id="nmOk">Listo</button></div>`;
-    const go=()=>{const v=document.getElementById("nm").value.trim(); if(v){S.name=v; save(); render(); track("registro");}};
+    const go=()=>{const v=document.getElementById("nm").value.trim(); if(v.length>=3){S.name=v; save(); render(); track("registro");} else { const i=document.getElementById("nm"); i.style.borderColor="#b42318"; i.placeholder="Nombre obligatorio (mín. 3 letras)"; i.focus(); }};
     document.getElementById("nmOk").onclick=go;
     document.getElementById("nm").onkeydown=e=>{if(e.key==="Enter")go();};
   } else {
     who.innerHTML = `<div class="who"><div class="holder" style="flex:1"><small>Titular del pasaporte · N.º ${REG.id}</small>${esc(S.name)}</div><button class="btn ghost" id="nmEd" style="padding:6px 10px;font-size:13px">Editar</button></div>`;
-    document.getElementById("nmEd").onclick=()=>{S.name=""; render(); setTimeout(()=>{const i=document.getElementById("nm"); if(i) i.focus();},0);};
+    document.getElementById("nmEd").onclick=()=>{ pedirNombre(null); const i=document.getElementById("nmReq"); if(i) i.value=S.name; };
   }
+  const sb = document.getElementById("scanBtn"); if (sb) sb.style.opacity = S.name ? "1" : ".55";
   // progress
   const n = count();
   const ring = document.getElementById("ring"); ring.style.setProperty("--p", Math.round(n/TOTAL*100));
@@ -2686,7 +2692,7 @@ function render(){
     filas.map(f=>`<div class="mc"><div class="mc-l"><b>${f.c.curso}</b> <span>${f.c.flag} ${f.c.pais}</span></div><div class="mc-t"><div style="width:${f.n/maxC*100}%;background:${f.c.color}"></div></div><div class="mc-n">${f.n}</div></div>`).join("");
   document.getElementById("rewards").innerHTML = `<h2>Premios</h2>` + rw.map(r=>{
     const red = REG.canjes[r.k];
-    const st = red ? `Canjeado<br>${fmt(red)}` : r.got ? "¡Ganado!<br>Ve a la Aduana" : "Pendiente";
+    const st = red ? `¡Ganado! ✓<br>${fmt(red)}` : r.got ? "¡Ganado! ✓" : "Pendiente";
     return `<div class="reward ${r.got?"got":""} ${red?"red":""}"><div class="badge">${r.icon}</div><div><b>${r.t}</b><span>${r.d}</span></div><div class="st">${st}</div></div>`;
   }).join("");
 }
@@ -2795,7 +2801,24 @@ function handleHash(){
   clearHash();
   processToken(h);
 }
+let pendingToken = null;
+function pedirNombre(h){
+  pendingToken = h || pendingToken;
+  open(`<h3>Antes de sellar…</h3><p>Escribe el nombre del titular del pasaporte. Es obligatorio para registrar tus compras y premios.</p>
+    <input id="nmReq" maxlength="40" placeholder="Nombre y apellido" autocomplete="name" style="letter-spacing:0;font-size:18px;text-align:left">
+    <div class="err" id="nmErr"></div><button class="btn orange" id="nmReqOk">Guardar y continuar</button>`);
+  const go = ()=>{
+    const v = document.getElementById("nmReq").value.trim();
+    if (v.length < 3){ document.getElementById("nmErr").textContent = "Escribe al menos 3 letras."; return; }
+    S.name = v; save(); track("registro"); closeOv(); render();
+    if (pendingToken){ const tk = pendingToken; pendingToken = null; processToken(tk); }
+  };
+  document.getElementById("nmReqOk").onclick = go;
+  document.getElementById("nmReq").onkeydown = e=>{ if(e.key==="Enter") go(); };
+  setTimeout(()=>{ const i = document.getElementById("nmReq"); if (i) i.focus(); }, 80);
+}
 function processToken(h){
+  if (!S.name){ pedirNombre(h); return; }
   const id = BY_TOKEN[h];
   if (!id){ open(`<h3>Código no reconocido</h3><p>Este QR no pertenece al pasaporte. Pide al puesto que te muestre su código.</p><button class="btn" onclick="closeOv()">Entendido</button>`); return; }
   const st = STAMP[id];
@@ -2831,6 +2854,21 @@ function processToken(h){
   open(`<div class="mascot${st.c.flip?" flip":""}" style="background-image:url(${IMG[st.c.img]});width:120px;height:130px;margin:0 auto -18px"></div><div class="big-stamp" style="--c:${st.c.color}"><span class="p">${st.c.pais}</span><span class="l">${st.p}</span><span class="t">${st.c.curso} · ${fmt(S.stamps[id])}</span></div>
     <h3>¡Sello conseguido!</h3>${extra}<button class="btn orange" onclick="closeOv()">Ver mi pasaporte</button>`);
   celebrate(newly.length ? "logro" : "sello", st.c.color);
+  if (newly.length) autoCanje(newly);
+}
+async function autoCanje(lista){
+  for (const r of lista){
+    if (REG.canjes[r.k]) continue;
+    REG.canjes[r.k] = Date.now(); save();
+    if (!FB) continue;
+    try {
+      const res = await api({pasaporte: REG.id, nombre: S.name||"", premio: r.t, premioId: r.k, sellos: count(), auto: true, ts: REG.canjes[r.k]});
+      if (res.dup && res.ts){ REG.canjes[r.k] = res.ts; save(); }
+    } catch(e){
+      track("canje", {premio: r.t, premioId: r.k, sellos: count()});   // sin conexión: se sube después
+    }
+  }
+  render();
 }
 window.closeOv = closeOv;
 
@@ -2843,19 +2881,50 @@ document.getElementById("aduBtn").onclick = ()=>{
   setTimeout(()=>{const i=document.getElementById("pin"); if(i) i.focus();},50);
 };
 function aduana(){
-  const rows = rewardsList().filter(r=>r.got || REG.canjes[r.k]).map(r=>{
-    const red = REG.canjes[r.k];
-    return `<div class="adu-row"><div><b>${r.icon} ${r.t}</b><span>${r.d}</span></div>${red?`<div class="valid">Canjeado ${fmt(red)}</div>`:`<button class="btn orange" data-r="${r.k}" style="padding:8px 10px;font-size:13px">Entregar</button>`}</div>`;
-  }).join("") || `<p>Este pasaporte todavía no tiene premios ganados.</p>`;
   const v = Object.values(S.stamps);
-  const first = v.length ? fmt(Math.min(...v)) : "—";
-  const last = v.length ? fmt(Math.max(...v)) : "—";
-  const rein = REG.reinicios.length ? `<br><span style="color:#b42318;font-weight:800">Reiniciado ${REG.reinicios.length} ${REG.reinicios.length===1?"vez":"veces"} (último ${fmt(REG.reinicios[REG.reinicios.length-1])})</span>` : "";
-  const sync = !FB ? `<br><span style="font-size:12px">Base central: no configurada</span>` : (pendingW || !navigator.onLine) ? `<br><span style="font-size:12px;color:#b45309;font-weight:800">${pendingW||""} registro(s) pendientes: se envían al volver el internet</span>` : `<br><span style="font-size:12px;color:var(--ok);font-weight:800">Base central al día ✓</span>`;
-  open(`<h3>Aduana</h3><p><b style="color:var(--navy)">${esc(S.name||"Sin nombre")}</b> · N.º ${REG.id}<br>${count()}/${TOTAL} sellos · ${Object.values(S.compras).reduce((a,l)=>a+l.length,0)} compras · primero ${first} · último ${last}${rein}${sync}</p>${rows}
-    <div class="row-btns" style="margin-top:14px"><button class="btn ghost" onclick="closeOv()">Cerrar</button><button class="btn" id="rstBtn" style="background:#b42318">Reiniciar pasaporte</button></div>`);
-  modal.querySelectorAll("button[data-r]").forEach(b=>b.onclick=()=>entregar(b.dataset.r, false, b));
+  const misCompras = Object.values(S.compras).reduce((a,l)=>a+l.length,0);
+  const rein = REG.reinicios.length ? ` · <span style="color:#b42318;font-weight:800">reiniciado ${REG.reinicios.length}×</span>` : "";
+  const sync = !FB ? `Base central no configurada` : (pendingW || !navigator.onLine) ? `<span style="color:#b45309;font-weight:800">${pendingW||""} registro(s) pendientes de subir</span>` : `<span style="color:var(--ok);font-weight:800">Base central al día ✓</span>`;
+  const premios = rewardsList().filter(r=>REG.canjes[r.k]).map(r=>`${r.icon} ${r.t}`).join("<br>") || "Ninguno todavía";
+  open(`<h3>Aduana · Control de ventas</h3>
+    <div id="adV" style="text-align:left;margin:10px 0"><p style="text-align:center">Cargando ventas…</p></div>
+    <div style="text-align:left;border-top:1px solid #ece4d6;padding-top:10px;font-size:13px;color:var(--muted)">
+      <b style="color:var(--navy)">Este celular:</b> ${esc(S.name||"Sin nombre")} · ${REG.id}<br>${count()}/${TOTAL} sellos · ${misCompras} compras${rein}<br>Premios: ${premios}<br>${sync}</div>
+    <div class="row-btns" style="margin-top:14px"><a class="btn" href="?panel" style="text-decoration:none">Panel completo</a><button class="btn ghost" onclick="closeOv()">Cerrar</button><button class="btn" id="rstBtn" style="background:#b42318">Reiniciar</button></div>`);
   document.getElementById("rstBtn").onclick = confirmReset;
+  cargarVentas();
+}
+async function cargarVentas(){
+  const box = document.getElementById("adV"); if (!box) return;
+  if (!FB){ box.innerHTML = "<p>Configura Firebase para ver las ventas.</p>"; return; }
+  try {
+    const get = col=>withTimeout(FB.collection(col).get(), 8000).catch(()=>FB.collection(col).get({source:"cache"}));
+    const [cs, ca, pa] = await Promise.all([get("compras"), get("canjes"), get("pasaportes")]);
+    const compras = cs.docs.map(d=>d.data());
+    const cnt = {}; compras.forEach(c=>{ cnt[c.sello]=(cnt[c.sello]||0)+1; });
+    const cursos = []; PASSPORTS.forEach(pp=>pp.countries.forEach(c=>{
+      const pars = c.par.map(p=>[p, cnt[`${pp.key}-${c.n}-${p}`]||0]);
+      cursos.push({c, pars, n: pars.reduce((a,x)=>a+x[1],0)});
+    }));
+    cursos.sort((a,b)=>b.n-a.n);
+    const max = Math.max(1, ...cursos.map(x=>x.n));
+    const hoy = new Date().toLocaleTimeString("es-EC",{hour:"2-digit",minute:"2-digit"});
+    if (!document.getElementById("adV")) return;
+    box.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;margin-bottom:10px">
+        <div style="background:#f6efe3;border-radius:12px;padding:8px"><b style="font-size:24px;color:var(--navy);display:block">${compras.length}</b><span style="font-size:11px;color:var(--muted);font-weight:800">COMPRAS</span></div>
+        <div style="background:#f6efe3;border-radius:12px;padding:8px"><b style="font-size:24px;color:var(--navy);display:block">${pa.docs.length}</b><span style="font-size:11px;color:var(--muted);font-weight:800">PASAPORTES</span></div>
+        <div style="background:#f6efe3;border-radius:12px;padding:8px"><b style="font-size:24px;color:var(--navy);display:block">${ca.docs.length}</b><span style="font-size:11px;color:var(--muted);font-weight:800">PREMIOS</span></div>
+      </div>
+      ${cursos.map((x,i)=>`<div style="padding:6px 0;border-top:1px solid #ece4d6">
+        <div style="display:flex;justify-content:space-between;font-weight:800;color:var(--navy)"><span>${i+1}. ${x.c.curso} <span style="color:var(--muted);font-weight:600">${x.c.flag} ${x.c.pais}</span></span><span>${x.n}</span></div>
+        <div style="height:8px;background:#ece4d6;border-radius:99px;margin:4px 0"><div style="height:100%;width:${x.n/max*100}%;background:${x.c.color};border-radius:99px"></div></div>
+        <div style="font-size:12px;color:var(--muted)">${x.pars.map(([p,n])=>`Paralelo ${p}: <b style="color:var(--navy)">${n}</b>`).join(" · ")}</div></div>`).join("")}
+      <p style="font-size:11px;color:var(--muted);text-align:right;margin:6px 0 0">Actualizado ${hoy} · <a href="#" id="adRef">actualizar</a></p>`;
+    const rf = document.getElementById("adRef"); if (rf) rf.onclick = ev=>{ ev.preventDefault(); box.innerHTML = '<p style="text-align:center">Cargando ventas…</p>'; cargarVentas(); };
+  } catch(e){
+    box.innerHTML = "<p>No se pudieron cargar las ventas (sin conexión). Intenta de nuevo en un momento.</p>";
+  }
 }
 async function entregar(k, force, btn){
   if (REG.canjes[k]) return aduana();                       // nunca se entrega dos veces en este celular
@@ -2975,6 +3044,7 @@ function tokenFrom(text){
   return m ? m[1].toLowerCase() : null;
 }
 async function startScan(){
+  if (!S.name){ pedirNombre(null); return; }
   closeOv();
   scanEl.classList.add("show"); scanMsg.textContent = "Activando cámara…";
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
