@@ -45,6 +45,12 @@ button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:10px 14px
 .slots{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .slot{width:50px;height:50px;border-radius:14px;background:#fff;border:2px dashed #d6cdbd;display:grid;place-items:center;position:relative;font-family:"Permanent Marker",cursive;font-size:22px;color:#c9bfae}
 .slot.done{border:0;background:transparent}
+.mycnt{margin-top:8px;font-size:13px;font-weight:800;color:var(--navy)}
+.mc{display:grid;grid-template-columns:1fr 90px 30px;align-items:center;gap:10px;padding:6px 0;border-top:1px solid #ece4d6}
+.mc:first-of-type{border-top:0}
+.mc-l b{color:var(--navy)} .mc-l span{color:var(--muted);font-size:13px}
+.mc-t{height:10px;background:#ece4d6;border-radius:99px;overflow:hidden}.mc-t div{height:100%;border-radius:99px}
+.mc-n{font-weight:800;color:var(--navy);text-align:right;font-size:17px}
 .slot .cnt{position:absolute;right:-6px;top:-6px;background:var(--navy);color:#fff;font-family:Nunito;font-weight:800;font-size:11px;border-radius:99px;padding:2px 6px;z-index:2}
 .stamp{position:absolute;inset:0;border-radius:50%;border:3px double var(--c,#c2410c);color:var(--c,#c2410c);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(var(--r,-12deg));background:rgba(255,255,255,.55);font-family:"Permanent Marker",cursive;line-height:1}
 .stamp .l{font-size:20px}
@@ -2473,6 +2479,7 @@ var qrcode = function() {
   <div class="tabs" id="tabs"></div>
   <div id="countries"></div>
 
+  <div class="card" id="misCompras"></div>
   <div class="card" id="rewards"></div>
 
   <div class="card how">
@@ -2663,13 +2670,18 @@ function render(){
       const id = `${pp.key}-${c.n}-${p}`; const ts = S.stamps[id];
       if (!ts) return `<div class="slot">${p}</div>`;
       const nc = (S.compras[id]||[]).length;
-      return `<div class="slot done ${fresh===id?"new":""}"><div class="stamp" style="--c:${c.color};--r:${ROT(id)}"><span class="l">${p}</span><span class="t">${fmt(ts)}</span></div>${nc>1?`<span class="cnt">×${nc}</span>`:""}</div>`;
+      return `<div class="slot done ${fresh===id?"new":""}"><div class="stamp" style="--c:${c.color};--r:${ROT(id)}"><span class="l">${p}</span><span class="t">${new Date(ts).toLocaleTimeString("es-EC",{hour:"2-digit",minute:"2-digit",hour12:false})}</span></div>${nc>1?`<span class="cnt">×${nc}</span>`:""}</div>`;
     }).join("");
     return `<div class="card country"><div class="mascot${c.flip?" flip":""}" style="background-image:url(${IMG[c.img]})"></div>
-      <div class="cinfo"><div class="curso">${c.curso}</div><div class="pais">${c.pais} ${countryDone(pp,c)?'<span class="visa">VISA ✓</span>':""}</div><div class="slots">${slots}</div></div></div>`;
+      <div class="cinfo"><div class="curso">${c.curso}</div><div class="pais">${c.pais} ${countryDone(pp,c)?'<span class="visa">VISA ✓</span>':""}</div><div class="slots">${slots}</div>${(()=>{ const per = c.par.map(p=>[p,(S.compras[`${pp.key}-${c.n}-${p}`]||[]).length]); const tot = per.reduce((a,x)=>a+x[1],0); return tot ? `<div class="mycnt">🛒 ${tot} ${tot===1?"compra":"compras"} en ${c.curso}${c.par.length>1?` · ${per.filter(x=>x[1]).map(x=>`${x[0]}×${x[1]}`).join(" · ")}`:""}</div>` : ""; })()}</div></div>`;
   }).join("");
   // rewards
   const rw = rewardsList();
+  // Mis compras por curso
+  const filas = []; PASSPORTS.forEach(pp2=>pp2.countries.forEach(c=>{ const n = c.par.reduce((a,p)=>a+(S.compras[`${pp2.key}-${c.n}-${p}`]||[]).length,0); filas.push({c,n}); }));
+  const totC = filas.reduce((a,f)=>a+f.n,0), maxC = Math.max(1,...filas.map(f=>f.n));
+  document.getElementById("misCompras").innerHTML = `<h2>Mis compras por curso <span style="font-family:Nunito;font-size:15px;color:var(--muted);font-weight:800">· ${totC} en total</span></h2>` +
+    filas.map(f=>`<div class="mc"><div class="mc-l"><b>${f.c.curso}</b> <span>${f.c.flag} ${f.c.pais}</span></div><div class="mc-t"><div style="width:${f.n/maxC*100}%;background:${f.c.color}"></div></div><div class="mc-n">${f.n}</div></div>`).join("");
   document.getElementById("rewards").innerHTML = `<h2>Premios</h2>` + rw.map(r=>{
     const red = REG.canjes[r.k];
     const st = red ? `Canjeado<br>${fmt(red)}` : r.got ? "¡Ganado!<br>Ve a la Aduana" : "Pendiente";
