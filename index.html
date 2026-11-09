@@ -59,6 +59,11 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;border-radiu
 .slot.done.new .stamp{animation:thump .6s cubic-bezier(.2,1.6,.4,1) both}
 @keyframes thump{0%{transform:scale(2.4) rotate(0);opacity:0}60%{opacity:1}100%{transform:scale(1) rotate(var(--r,-12deg))}}
 h2{font-family:"DM Serif Display",serif;color:var(--navy);font-weight:400;font-size:22px;margin:4px 0 8px}
+.rec-h{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:transparent;padding:0;text-align:left;color:var(--navy)}
+.rec-t{font-family:"DM Serif Display",serif;font-weight:400;font-size:22px;display:block}
+.rec-s{display:block;font-family:Nunito;font-size:13px;font-weight:700;color:var(--muted);margin-top:2px}
+.rec-ch{font-size:14px;width:34px;height:34px;border-radius:50%;background:#f1e8da;display:grid;place-items:center;flex:none}
+.rec-b{margin-top:10px}
 .reward{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid #ece4d6}
 .reward:first-of-type{border-top:0}
 .badge{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:20px;background:#ece4d6;flex:none;filter:grayscale(1);opacity:.6}
@@ -2585,10 +2590,7 @@ function track(type, extra){
   try {
     const base = {pasaporte:REG.id, nombre:S.name||"", ts:Date.now(), srv:SRV()};
     if (type==="registro") upPas();
-    if (type==="sello"){
-      w(FB.collection("sellos").doc(REG.id+"_"+extra.sello).set(Object.assign(base, {sello:extra.sello, nivel:extra.nivel, curso:extra.curso, pais:extra.pais, paralelo:extra.paralelo, total:extra.total})));
-      upPas();
-    }
+    if (type==="sello"){ /* el sello queda registrado como la compra n.º 1 de ese paralelo (1 sola escritura por escaneo) */ }
     if (type==="compra"){
       w(FB.collection("compras").doc(REG.id+"_"+extra.sello+"_"+extra.n).set(Object.assign(base, {sello:extra.sello, nivel:extra.nivel, curso:extra.curso, pais:extra.pais, paralelo:extra.paralelo, n:extra.n})));
     }
@@ -2690,12 +2692,19 @@ function render(){
   const totC = filas.reduce((a,f)=>a+f.n,0), maxC = Math.max(1,...filas.map(f=>f.n));
   document.getElementById("misCompras").innerHTML = `<h2>Mis compras por curso <span style="font-family:Nunito;font-size:15px;color:var(--muted);font-weight:800">· ${totC} en total</span></h2>` +
     filas.map(f=>`<div class="mc"><div class="mc-l"><b>${f.c.curso}</b> <span>${f.c.flag} ${f.c.pais}</span></div><div class="mc-t"><div style="width:${f.n/maxC*100}%;background:${f.c.color}"></div></div><div class="mc-n">${f.n}</div></div>`).join("");
-  document.getElementById("rewards").innerHTML = `<h2>Premios</h2>` + rw.map(r=>{
+  const ganados = rw.filter(r=>r.got || REG.canjes[r.k]).length;
+  const rwEl = document.getElementById("rewards");
+  rwEl.innerHTML = `<button class="rec-h" id="recBtn" aria-expanded="${recorridoAbierto}">
+      <span><span class="rec-t">Tu recorrido</span><span class="rec-s">${ganados} de ${rw.length} logros · ${rw.filter(r=>r.got).map(r=>r.icon).join(" ") || "toca para ver tus metas"}</span></span>
+      <span class="rec-ch">${recorridoAbierto ? "▲" : "▼"}</span></button>
+    <div class="rec-b" ${recorridoAbierto ? "" : "hidden"}>` + rw.map(r=>{
     const red = REG.canjes[r.k];
     const st = red ? `¡Ganado! ✓<br>${fmt(red)}` : r.got ? "¡Ganado! ✓" : "Pendiente";
     return `<div class="reward ${r.got?"got":""} ${red?"red":""}"><div class="badge">${r.icon}</div><div><b>${r.t}</b><span>${r.d}</span></div><div class="st">${st}</div></div>`;
-  }).join("");
+  }).join("") + `</div>`;
+  document.getElementById("recBtn").onclick = ()=>{ recorridoAbierto = !recorridoAbierto; render(); };
 }
+let recorridoAbierto = false;
 
 // overlay helpers
 const ov = document.getElementById("ov"), modal = document.getElementById("modal");
@@ -2894,12 +2903,22 @@ function aduana(){
   document.getElementById("rstBtn").onclick = confirmReset;
   cargarVentas();
 }
+let VENTAS = null;   // caché en vivo para la Aduana (se suscribe una sola vez por dispositivo)
+function suscribirVentas(){
+  if (VENTAS || !FB) return;
+  VENTAS = {compras:null, canjes:null, pasaportes:null};
+  ["compras","canjes","pasaportes"].forEach(col=>FB.collection(col).onSnapshot(sn=>{
+    VENTAS[col] = sn.docs;
+    if (document.getElementById("adV")) cargarVentas();
+  }, ()=>{}));
+}
 async function cargarVentas(){
   const box = document.getElementById("adV"); if (!box) return;
   if (!FB){ box.innerHTML = "<p>Configura Firebase para ver las ventas.</p>"; return; }
+  suscribirVentas();
+  if (!VENTAS.compras || !VENTAS.canjes || !VENTAS.pasaportes){ box.innerHTML = '<p style="text-align:center">Cargando ventas…</p>'; return; }
   try {
-    const get = col=>withTimeout(FB.collection(col).get(), 8000).catch(()=>FB.collection(col).get({source:"cache"}));
-    const [cs, ca, pa] = await Promise.all([get("compras"), get("canjes"), get("pasaportes")]);
+    const cs = {docs:VENTAS.compras}, ca = {docs:VENTAS.canjes}, pa = {docs:VENTAS.pasaportes};
     const compras = cs.docs.map(d=>d.data());
     const cnt = {}; compras.forEach(c=>{ cnt[c.sello]=(cnt[c.sello]||0)+1; });
     const cursos = []; PASSPORTS.forEach(pp=>pp.countries.forEach(c=>{
@@ -2920,8 +2939,7 @@ async function cargarVentas(){
         <div style="display:flex;justify-content:space-between;font-weight:800;color:var(--navy)"><span>${i+1}. ${x.c.curso} <span style="color:var(--muted);font-weight:600">${x.c.flag} ${x.c.pais}</span></span><span>${x.n}</span></div>
         <div style="height:8px;background:#ece4d6;border-radius:99px;margin:4px 0"><div style="height:100%;width:${x.n/max*100}%;background:${x.c.color};border-radius:99px"></div></div>
         <div style="font-size:12px;color:var(--muted)">${x.pars.map(([p,n])=>`Paralelo ${p}: <b style="color:var(--navy)">${n}</b>`).join(" · ")}</div></div>`).join("")}
-      <p style="font-size:11px;color:var(--muted);text-align:right;margin:6px 0 0">Actualizado ${hoy} · <a href="#" id="adRef">actualizar</a></p>`;
-    const rf = document.getElementById("adRef"); if (rf) rf.onclick = ev=>{ ev.preventDefault(); box.innerHTML = '<p style="text-align:center">Cargando ventas…</p>'; cargarVentas(); };
+      <p style="font-size:11px;color:var(--muted);text-align:right;margin:6px 0 0">En vivo · actualizado ${hoy}</p>`;
   } catch(e){
     box.innerHTML = "<p>No se pudieron cargar las ventas (sin conexión). Intenta de nuevo en un momento.</p>";
   }
@@ -2973,7 +2991,8 @@ function buildPanel(){
 function startPanel(){
   const live = document.getElementById("pLive");
   if (!FB){ live.textContent = "Base central no configurada"; live.classList.add("off"); return; }
-  const D = {sellos:[], compras:[], canjes:[], pasaportes:[], reinicios:[]};
+  const D = {compras:[], canjes:[], pasaportes:[], reinicios:[]};
+  let drawPending = false; const drawSoon = ()=>{ if (drawPending) return; drawPending = true; requestAnimationFrame(()=>{ drawPending = false; draw(); }); };
   const PAR = []; PASSPORTS.forEach(pp=>pp.countries.forEach(c=>c.par.forEach(p=>PAR.push({id:`${pp.key}-${c.n}-${p}`, c, p}))));
   const CUR = []; PASSPORTS.forEach(pp=>pp.countries.forEach(c=>CUR.push({key:`${pp.key}-${c.n}`, c})));
   const hhmm = ts=>new Date(ts).toLocaleTimeString("es-EC",{hour:"2-digit",minute:"2-digit"});
@@ -2982,7 +3001,8 @@ function startPanel(){
     el.innerHTML = list.map((x,i)=>`<div class="bar ${i===0&&x.n>0?"top":""}"><div class="pos">${i+1}</div><div class="ms" style="background-image:url(${IMG[x.img]})"></div><div><div class="lbl">${esc(x.t)} <small>${esc(x.s)}</small></div><div class="trk"><div class="fill" style="width:${x.n/max*100}%"></div></div></div><div class="n">${x.n}</div></div>`).join("");
   };
   function draw(){
-    const cnt = {}; (D.compras.length ? D.compras : D.sellos).forEach(s=>{ const k = s.sello; cnt[k]=(cnt[k]||0)+1; });
+    D.sellos = D.compras.filter(c=>c.n===1);
+    const cnt = {}; D.compras.forEach(s=>{ const k = s.sello; cnt[k]=(cnt[k]||0)+1; });
     bars(PAR.map(x=>({t:`${x.c.curso} ${x.p}`, s:x.c.pais, img:x.c.img, n:cnt[x.id]||0})).sort((a,b)=>b.n-a.n), document.getElementById("rPar"));
     bars(CUR.map(x=>({t:x.c.curso, s:x.c.pais, img:x.c.img, n:x.c.par.reduce((a,p)=>a+(cnt[`${x.key}-${p}`]||0),0)})).sort((a,b)=>b.n-a.n), document.getElementById("rCur"));
     document.getElementById("kPas").textContent = D.pasaportes.length;
@@ -2998,21 +3018,23 @@ function startPanel(){
     document.getElementById("fSor").innerHTML = sor.map(c=>`<div><b>${esc(c.nombre||"Sin nombre")}</b><span>${esc(c.pasaporte)} · ${esc(c.premio)}${c.premioId==="embajador"?" · 2 boletas":""}</span></div>`).join("") || "<p>Aún no hay participantes.</p>";
   }
   let first = true;
-  ["sellos","compras","canjes","pasaportes","reinicios"].forEach(col=>{
+  // Un solo listener por colección: tras la carga inicial solo se leen los documentos nuevos
+  ["compras","canjes","pasaportes","reinicios"].forEach(col=>{
     FB.collection(col).onSnapshot(snap=>{
       D[col] = snap.docs.map(d=>Object.assign({_id:d.id}, d.data()));
       live.textContent = snap.metadata.fromCache ? "Sin conexión · datos guardados" : "En vivo ●"; live.classList.toggle("off", snap.metadata.fromCache);
-      draw();
+      drawSoon();
     }, err=>{ live.textContent = "Error: revisa las reglas de Firestore"; live.classList.add("off"); });
   });
   const COLS = {
-    sellos:["pasaporte","nombre","nivel","curso","pais","paralelo","sello","total","ts"],
+    sellos:["pasaporte","nombre","nivel","curso","pais","paralelo","sello","ts"],
     compras:["pasaporte","nombre","nivel","curso","pais","paralelo","sello","n","ts"],
     canjes:["pasaporte","nombre","premio","premioId","sellos","obs","ts"],
-    pasaportes:["_id","nombre","sellos","reinicios","actualizado"],
+    pasaportes:["_id","nombre","sellosHoy","comprasHoy","reinicios","actualizado"],
     reinicios:["pasaporte","nombre","sellos","ts"]};
   document.querySelectorAll("[data-csv]").forEach(b=>b.onclick=()=>{
     const col = b.dataset.csv, cols = COLS[col];
+    if (col==="pasaportes") D.pasaportes.forEach(p=>{ const mine = D.compras.filter(c=>c.pasaporte===p._id); p.comprasHoy = mine.length; p.sellosHoy = mine.filter(c=>c.n===1).length; });
     const q = v=>`"${String(v==null?"":v).replace(/"/g,'""')}"`;
     const fmtv = (k,v)=> (k==="ts"||k==="actualizado") && v ? new Date(v).toLocaleString("es-EC") : v;
     const rows = [cols.map(c=>c==="_id"?"pasaporte":c).join(",")].concat(D[col].map(r=>cols.map(c=>q(fmtv(c,r[c]))).join(",")));
@@ -3065,10 +3087,11 @@ function stopScan(){
   if (stream){ stream.getTracks().forEach(t=>t.stop()); stream = null; }
   vid.srcObject = null; scanEl.classList.remove("show");
 }
-let lastBad = 0, busy = false;
+let lastBad = 0, busy = false, lastTry = 0;
 async function tick(){
   if (!scanning) return;
-  if (!busy && vid.readyState >= 2){
+  if (!busy && vid.readyState >= 2 && performance.now() - lastTry > 110){   // ~9 lecturas/seg: ahorra batería en celulares modestos
+    lastTry = performance.now();
     busy = true;
     let text = null;
     try {
