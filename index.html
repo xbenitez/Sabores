@@ -59,6 +59,13 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;border-radiu
 .slot.done.new .stamp{animation:thump .6s cubic-bezier(.2,1.6,.4,1) both}
 @keyframes thump{0%{transform:scale(2.4) rotate(0);opacity:0}60%{opacity:1}100%{transform:scale(1) rotate(var(--r,-12deg))}}
 h2{font-family:"DM Serif Display",serif;color:var(--navy);font-weight:400;font-size:22px;margin:4px 0 8px}
+.voto{background:#f6efe3;border-radius:16px;padding:12px;margin:4px 0 14px}
+.voto-q{font-size:14px;color:var(--navy);margin-bottom:8px}
+.voto-n{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.voto-n button{padding:9px 0;border-radius:9px;background:#fff;border:2px solid var(--vc);color:var(--vc);font-size:14px;font-weight:800}
+.voto-n button:active{background:var(--vc);color:#fff}
+.voto-l{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:700;margin-top:4px}
+.voto-ok{font-size:15px;color:var(--navy);padding:6px 0}
 .rec-h{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:transparent;padding:0;text-align:left;color:var(--navy)}
 .rec-t{font-family:"DM Serif Display",serif;font-weight:400;font-size:22px;display:block}
 .rec-s{display:block;font-family:Nunito;font-size:13px;font-weight:700;color:var(--muted);margin-top:2px}
@@ -105,7 +112,7 @@ body.pmode #panel{display:block}
 .phead img{height:40px}.phead h1{font-size:36px;margin:0}
 .phead .live{margin-left:auto;font-weight:800;font-size:13px;padding:6px 12px;border-radius:99px;background:#e6f4ea;color:var(--ok)}
 .phead .live.off{background:#fde8e8;color:#b42318}
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:12px}
 .kpi{background:rgba(255,253,248,.92);border-radius:18px;padding:16px 18px;box-shadow:0 2px 10px rgba(18,58,99,.08)}
 .kpi b{display:block;font-size:40px;color:var(--navy);line-height:1.1;font-variant-numeric:tabular-nums}
 .kpi span{color:var(--muted);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.4px}
@@ -2504,16 +2511,17 @@ var qrcode = function() {
 
 <div id="panel"><div class="pw">
   <div class="phead"><img src="data:image/png;base64,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" alt="K-Launch"><h1>Sabores del Mundo · Panel en vivo</h1><span class="live" id="pLive">Conectando…</span></div>
-  <div class="kpis"><div class="kpi"><span>Pasaportes</span><b id="kPas">0</b></div><div class="kpi"><span>Compras registradas</span><b id="kSel">0</b></div><div class="kpi"><span>Sellos</span><b id="kSel2">0</b></div><div class="kpi"><span>Premios ganados</span><b id="kCan">0</b></div><div class="kpi"><span>Embajadores (14/14)</span><b id="kEmb">0</b></div></div>
+  <div class="kpis"><div class="kpi"><span>Pasaportes</span><b id="kPas">0</b></div><div class="kpi"><span>Compras registradas</span><b id="kSel">0</b></div><div class="kpi"><span>Sellos</span><b id="kSel2">0</b></div><div class="kpi"><span>Premios ganados</span><b id="kCan">0</b></div><div class="kpi"><span>Embajadores (14/14)</span><b id="kEmb">0</b></div><div class="kpi"><span>Experiencia (1–10)</span><b id="kVot">—</b></div></div>
   <div class="pgrid">
     <div class="pcard"><h2>Ranking por paralelo (compras)</h2><div id="rPar"></div></div>
     <div style="display:grid;gap:12px;align-content:start">
       <div class="pcard"><h2>Ranking por curso (compras)</h2><div id="rCur"></div></div>
+      <div class="pcard"><h2>Experiencia por curso (1–10)</h2><div id="rVot"></div></div>
       <div class="pcard"><h2>Últimas compras</h2><div class="feed" id="fSel"></div></div>
     </div>
     <div class="pcard"><h2>Premios ganados</h2><div class="feed" id="fCan"></div></div>
     <div class="pcard"><h2>Participantes del sorteo</h2><div class="feed" id="fSor"></div>
-      <div class="pbtns"><button class="btn" data-csv="compras">Descargar compras (CSV)</button><button class="btn" data-csv="sellos">Descargar sellos (CSV)</button><button class="btn" data-csv="canjes">Descargar premios (CSV)</button><button class="btn" data-csv="pasaportes">Descargar pasaportes (CSV)</button><button class="btn ghost" data-csv="reinicios">Reinicios (CSV)</button></div>
+      <div class="pbtns"><button class="btn" data-csv="compras">Descargar compras (CSV)</button><button class="btn" data-csv="votos">Descargar votos (CSV)</button><button class="btn" data-csv="sellos">Descargar sellos (CSV)</button><button class="btn" data-csv="canjes">Descargar premios (CSV)</button><button class="btn" data-csv="pasaportes">Descargar pasaportes (CSV)</button><button class="btn ghost" data-csv="reinicios">Reinicios (CSV)</button></div>
     </div>
   </div>
 </div></div>
@@ -2557,11 +2565,11 @@ let storageOK = true;
 // Registro permanente: numero de pasaporte y premios entregados. El reinicio NO lo borra.
 const KEY_REG = "sdm_registro_v1";
 const newId = () => { const a="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s=""; const r=new Uint32Array(5); (crypto.getRandomValues?crypto.getRandomValues(r):r.forEach((_,i)=>r[i]=Math.random()*1e9)); r.forEach(v=>s+=a[v%a.length]); return "SDM-"+s; };
-let S = {name:"", stamps:{}, compras:{}};
+let S = {name:"", stamps:{}, compras:{}, votos:{}};
 let REG = {id:"", canjes:{}, reinicios:[]};
 function load(){
   try {
-    const raw = localStorage.getItem(KEY); S = Object.assign({name:"", stamps:{}, compras:{}}, raw?JSON.parse(raw):{});
+    const raw = localStorage.getItem(KEY); S = Object.assign({name:"", stamps:{}, compras:{}, votos:{}}, raw?JSON.parse(raw):{});
     Object.keys(S.stamps).forEach(k=>{ if(!S.compras[k]) S.compras[k]=[S.stamps[k]]; });
     const rg = localStorage.getItem(KEY_REG); REG = Object.assign({id:"", canjes:{}, reinicios:[]}, rg?JSON.parse(rg):{});
     if (S.redeemed){ Object.assign(REG.canjes, S.redeemed); delete S.redeemed; }
@@ -2593,6 +2601,10 @@ function track(type, extra){
     if (type==="sello"){ /* el sello queda registrado como la compra n.º 1 de ese paralelo (1 sola escritura por escaneo) */ }
     if (type==="compra"){
       w(FB.collection("compras").doc(REG.id+"_"+extra.sello+"_"+extra.n).set(Object.assign(base, {sello:extra.sello, nivel:extra.nivel, curso:extra.curso, pais:extra.pais, paralelo:extra.paralelo, n:extra.n})));
+    }
+    if (type==="voto"){
+      const s = STAMP[extra.sello];
+      w(FB.collection("votos").doc(REG.id+"_"+extra.sello+"_"+extra.n).set(Object.assign(base, {sello:extra.sello, curso:s.c.curso, pais:s.c.pais, paralelo:s.p, n:extra.n, nota:extra.nota})));
     }
     if (type==="reinicio"){ w(FB.collection("reinicios").add(Object.assign(base, {sellos:extra.sellos}))); }
     if (type==="canje"){   // usado solo cuando no hay conexión: queda en cola y se sube al volver el internet
@@ -2804,6 +2816,26 @@ function celebrate(tipo, color){
   confeti(tipo, color);
   try { if (navigator.vibrate) navigator.vibrate(tipo==="compra" ? 60 : [80,60,80,60,180]); } catch(e){}
 }
+// ---- Votación de experiencia (1 a 10) por cada compra ----
+const colorNota = n=>`hsl(${Math.round((n-1)/9*120)},70%,${n>=5&&n<=7?40:42}%)`;
+function bloqueVoto(id, n){
+  const st = STAMP[id];
+  return `<div class="voto" id="votoBox"><div class="voto-q">¿Cómo fue tu experiencia en <b>${st.c.curso} · ${st.p}</b>?</div>
+    <div class="voto-n">${Array.from({length:10},(_,i)=>`<button data-v="${i+1}" style="--vc:${colorNota(i+1)}">${i+1}</button>`).join("")}</div>
+    <div class="voto-l"><span>Mala</span><span>Excelente</span></div></div>`;
+}
+function activarVoto(id, n){
+  const k = `${id}_${n}`;
+  const box = document.getElementById("votoBox"); if (!box) return;
+  if (S.votos[k]){ box.innerHTML = `<div class="voto-ok">Calificaste <b>${S.votos[k]}/10</b>. ¡Gracias!</div>`; return; }
+  box.querySelectorAll("button[data-v]").forEach(b=>b.onclick=()=>{
+    const v = +b.dataset.v;
+    S.votos[k] = v; save();
+    track("voto", {sello:id, n, nota:v});
+    box.innerHTML = `<div class="voto-ok">${v>=9?"🤩":v>=7?"😊":v>=5?"🙂":"🙏"} Calificaste <b>${v}/10</b>. ¡Gracias por tu opinión!</div>`;
+    try { if (navigator.vibrate) navigator.vibrate(30); } catch(e){}
+  });
+}
 function handleHash(){
   const h = (location.hash||"").replace(/^#/,"").toLowerCase();
   if (!h) return;
@@ -2849,7 +2881,8 @@ function processToken(h){
     }
     lst.push(Date.now()); save(); render();
     track("compra", {sello:id, nivel:st.pp.toUpperCase(), curso:st.c.curso, pais:st.c.pais, paralelo:st.p, n:lst.length});
-    open(`<div class="mascot" style="background-image:url(${IMG[st.c.img]})"></div><h3>¡Compra registrada!</h3><p>Llevas <b>${lst.length} compras</b> en ${st.c.curso} · Paralelo ${st.p} (${st.c.pais}).<br>El sello de este puesto ya lo tienes: sigue explorando otros países.</p><button class="btn orange" onclick="closeOv()">Ver mi pasaporte</button>`);
+    open(`<div class="mascot" style="background-image:url(${IMG[st.c.img]})"></div><h3>¡Compra registrada!</h3><p>Llevas <b>${lst.length} compras</b> en ${st.c.curso} · Paralelo ${st.p} (${st.c.pais}).<br>El sello de este puesto ya lo tienes: sigue explorando otros países.</p>${bloqueVoto(id, lst.length)}<button class="btn orange" onclick="closeOv()">Ver mi pasaporte</button>`);
+    activarVoto(id, lst.length);
     celebrate("compra", st.c.color);
     return;
   }
@@ -2861,7 +2894,8 @@ function processToken(h){
   const newly = rewardsList().filter(r=>r.got && !before.includes(r.k));
   const extra = newly.length ? `<p style="color:var(--ok);font-weight:800">🎉 Desbloqueaste: ${newly.map(r=>r.t).join(" · ")}</p>` : `<p>¡Sello ${count()} de ${TOTAL}! Sigue recorriendo el mundo.</p>`;
   open(`<div class="mascot${st.c.flip?" flip":""}" style="background-image:url(${IMG[st.c.img]});width:120px;height:130px;margin:0 auto -18px"></div><div class="big-stamp" style="--c:${st.c.color}"><span class="p">${st.c.pais}</span><span class="l">${st.p}</span><span class="t">${st.c.curso} · ${fmt(S.stamps[id])}</span></div>
-    <h3>¡Sello conseguido!</h3>${extra}<button class="btn orange" onclick="closeOv()">Ver mi pasaporte</button>`);
+    <h3>¡Sello conseguido!</h3>${extra}${bloqueVoto(id, 1)}<button class="btn orange" onclick="closeOv()">Ver mi pasaporte</button>`);
+  activarVoto(id, 1);
   celebrate(newly.length ? "logro" : "sello", st.c.color);
   if (newly.length) autoCanje(newly);
 }
@@ -2906,8 +2940,8 @@ function aduana(){
 let VENTAS = null;   // caché en vivo para la Aduana (se suscribe una sola vez por dispositivo)
 function suscribirVentas(){
   if (VENTAS || !FB) return;
-  VENTAS = {compras:null, canjes:null, pasaportes:null};
-  ["compras","canjes","pasaportes"].forEach(col=>FB.collection(col).onSnapshot(sn=>{
+  VENTAS = {compras:null, canjes:null, pasaportes:null, votos:[]};
+  ["compras","canjes","pasaportes","votos"].forEach(col=>FB.collection(col).onSnapshot(sn=>{
     VENTAS[col] = sn.docs;
     if (document.getElementById("adV")) cargarVentas();
   }, ()=>{}));
@@ -2921,9 +2955,11 @@ async function cargarVentas(){
     const cs = {docs:VENTAS.compras}, ca = {docs:VENTAS.canjes}, pa = {docs:VENTAS.pasaportes};
     const compras = cs.docs.map(d=>d.data());
     const cnt = {}; compras.forEach(c=>{ cnt[c.sello]=(cnt[c.sello]||0)+1; });
+    const vt = {}; (VENTAS.votos||[]).map(d=>d.data()).forEach(v=>{ const k = v.sello.split("-").slice(0,2).join("-"); (vt[k]=vt[k]||[]).push(v.nota); });
     const cursos = []; PASSPORTS.forEach(pp=>pp.countries.forEach(c=>{
       const pars = c.par.map(p=>[p, cnt[`${pp.key}-${c.n}-${p}`]||0]);
-      cursos.push({c, pars, n: pars.reduce((a,x)=>a+x[1],0)});
+      const vv = vt[`${pp.key}-${c.n}`]||[];
+      cursos.push({c, pars, n: pars.reduce((a,x)=>a+x[1],0), nota: vv.length ? (vv.reduce((a,b)=>a+b,0)/vv.length).toFixed(1) : null, nv: vv.length});
     }));
     cursos.sort((a,b)=>b.n-a.n);
     const max = Math.max(1, ...cursos.map(x=>x.n));
@@ -2936,7 +2972,7 @@ async function cargarVentas(){
         <div style="background:#f6efe3;border-radius:12px;padding:8px"><b style="font-size:24px;color:var(--navy);display:block">${ca.docs.length}</b><span style="font-size:11px;color:var(--muted);font-weight:800">PREMIOS</span></div>
       </div>
       ${cursos.map((x,i)=>`<div style="padding:6px 0;border-top:1px solid #ece4d6">
-        <div style="display:flex;justify-content:space-between;font-weight:800;color:var(--navy)"><span>${i+1}. ${x.c.curso} <span style="color:var(--muted);font-weight:600">${x.c.flag} ${x.c.pais}</span></span><span>${x.n}</span></div>
+        <div style="display:flex;justify-content:space-between;font-weight:800;color:var(--navy)"><span>${i+1}. ${x.c.curso} <span style="color:var(--muted);font-weight:600">${x.c.flag} ${x.c.pais}</span></span><span>${x.n}${x.nota?` <span style="font-size:12px;color:${colorNota(Math.round(+x.nota))}">★ ${x.nota}</span>`:""}</span></div>
         <div style="height:8px;background:#ece4d6;border-radius:99px;margin:4px 0"><div style="height:100%;width:${x.n/max*100}%;background:${x.c.color};border-radius:99px"></div></div>
         <div style="font-size:12px;color:var(--muted)">${x.pars.map(([p,n])=>`Paralelo ${p}: <b style="color:var(--navy)">${n}</b>`).join(" · ")}</div></div>`).join("")}
       <p style="font-size:11px;color:var(--muted);text-align:right;margin:6px 0 0">En vivo · actualizado ${hoy}</p>`;
@@ -2975,7 +3011,7 @@ function confirmReset(){
     <div class="row-btns"><button class="btn ghost" id="rstNo">Cancelar</button><button class="btn" id="rstYes" style="background:#b42318">Sí, reiniciar</button></div>`);
   document.getElementById("rstNo").onclick = aduana;
   document.getElementById("rstYes").onclick = ()=>{
-    track("reinicio", {sellos: count()}); S = {name:"", stamps:{}, compras:{}}; REG.reinicios.push(Date.now()); fresh=null; tab="egb"; save(); render(); closeOv();
+    track("reinicio", {sellos: count()}); S = {name:"", stamps:{}, compras:{}, votos:{}}; REG.reinicios.push(Date.now()); fresh=null; tab="egb"; save(); render(); closeOv();
   };
 }
 
@@ -2991,7 +3027,7 @@ function buildPanel(){
 function startPanel(){
   const live = document.getElementById("pLive");
   if (!FB){ live.textContent = "Base central no configurada"; live.classList.add("off"); return; }
-  const D = {compras:[], canjes:[], pasaportes:[], reinicios:[]};
+  const D = {compras:[], canjes:[], pasaportes:[], reinicios:[], votos:[]};
   let drawPending = false; const drawSoon = ()=>{ if (drawPending) return; drawPending = true; requestAnimationFrame(()=>{ drawPending = false; draw(); }); };
   const PAR = []; PASSPORTS.forEach(pp=>pp.countries.forEach(c=>c.par.forEach(p=>PAR.push({id:`${pp.key}-${c.n}-${p}`, c, p}))));
   const CUR = []; PASSPORTS.forEach(pp=>pp.countries.forEach(c=>CUR.push({key:`${pp.key}-${c.n}`, c})));
@@ -3005,6 +3041,17 @@ function startPanel(){
     const cnt = {}; D.compras.forEach(s=>{ const k = s.sello; cnt[k]=(cnt[k]||0)+1; });
     bars(PAR.map(x=>({t:`${x.c.curso} ${x.p}`, s:x.c.pais, img:x.c.img, n:cnt[x.id]||0})).sort((a,b)=>b.n-a.n), document.getElementById("rPar"));
     bars(CUR.map(x=>({t:x.c.curso, s:x.c.pais, img:x.c.img, n:x.c.par.reduce((a,p)=>a+(cnt[`${x.key}-${p}`]||0),0)})).sort((a,b)=>b.n-a.n), document.getElementById("rCur"));
+    // Experiencia
+    const vs = {}; D.votos.forEach(v=>{ (vs[v.sello]=vs[v.sello]||[]).push(v.nota); });
+    const prom = a=>a.length ? a.reduce((x,y)=>x+y,0)/a.length : 0;
+    const todas = D.votos.map(v=>v.nota);
+    document.getElementById("kVot").textContent = todas.length ? prom(todas).toFixed(1) : "—";
+    const filasV = CUR.map(x=>{ const pars = x.c.par.map(p=>[p, vs[`${x.key}-${p}`]||[]]); const all = pars.flatMap(z=>z[1]); return {x, pars, all}; })
+      .sort((a,b)=>prom(b.all)-prom(a.all));
+    document.getElementById("rVot").innerHTML = filasV.map(({x,pars,all})=>`<div class="bar"><div class="pos"></div><div class="ms" style="background-image:url(${IMG[x.c.img]})"></div>
+      <div><div class="lbl">${esc(x.c.curso)} <small>${esc(x.c.pais)} · ${all.length} voto${all.length===1?"":"s"}</small></div><div class="trk"><div class="fill" style="width:${prom(all)*10}%;background:${all.length?colorNota(Math.round(prom(all))):"#ccc"}"></div></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:3px">${pars.map(([p,a])=>`${p}: <b style="color:var(--navy)">${a.length?prom(a).toFixed(1):"—"}</b>`).join(" · ")}</div></div>
+      <div class="n">${all.length?prom(all).toFixed(1):"—"}</div></div>`).join("");
     document.getElementById("kPas").textContent = D.pasaportes.length;
     document.getElementById("kSel").textContent = D.compras.length;
     document.getElementById("kSel2").textContent = D.sellos.length;
@@ -3019,7 +3066,7 @@ function startPanel(){
   }
   let first = true;
   // Un solo listener por colección: tras la carga inicial solo se leen los documentos nuevos
-  ["compras","canjes","pasaportes","reinicios"].forEach(col=>{
+  ["compras","canjes","pasaportes","reinicios","votos"].forEach(col=>{
     FB.collection(col).onSnapshot(snap=>{
       D[col] = snap.docs.map(d=>Object.assign({_id:d.id}, d.data()));
       live.textContent = snap.metadata.fromCache ? "Sin conexión · datos guardados" : "En vivo ●"; live.classList.toggle("off", snap.metadata.fromCache);
@@ -3029,6 +3076,7 @@ function startPanel(){
   const COLS = {
     sellos:["pasaporte","nombre","nivel","curso","pais","paralelo","sello","ts"],
     compras:["pasaporte","nombre","nivel","curso","pais","paralelo","sello","n","ts"],
+    votos:["pasaporte","nombre","curso","pais","paralelo","sello","n","nota","ts"],
     canjes:["pasaporte","nombre","premio","premioId","sellos","obs","ts"],
     pasaportes:["_id","nombre","sellosHoy","comprasHoy","reinicios","actualizado"],
     reinicios:["pasaporte","nombre","sellos","ts"]};
